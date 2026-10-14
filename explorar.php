@@ -1,5 +1,4 @@
 <?php
-// Página para explorar la estructura de la base de datos del docente
 require_once 'config/conexion.php';
 
 try {

@@ -1,7 +1,6 @@
 <?php
 require_once __DIR__ . '/config.php';
 
-// Devuelve una conexión PDO a MySQL
 function conectar(): PDO
 {
     $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PUERTO . ";charset=utf8mb4";
