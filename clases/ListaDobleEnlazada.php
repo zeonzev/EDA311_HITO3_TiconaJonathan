@@ -66,4 +66,48 @@ class ListaDobleEnlazada
     {
         return $this->cabeza === null;
     }
+
+    public function copiar(): ListaDobleEnlazada
+    {
+        $copia = new ListaDobleEnlazada();
+        $actual = $this->cabeza;
+        while ($actual !== null) {
+            $copia->insertarFinal($actual->dato);
+            $actual = $actual->siguiente;
+        }
+        return $copia;
+    }
+
+    public function ordenarBurbuja(callable $vaDespues): array
+    {
+        $pasadas = 0;
+        $comparaciones = 0;
+        $intercambios = 0;
+
+        if ($this->tamanyo < 2) {
+            return ['pasadas' => 0, 'comparaciones' => 0, 'intercambios' => 0];
+        }
+
+        $limite = null;
+        do {
+            $huboIntercambio = false;
+            $pasadas++;
+            $actual = $this->cabeza;
+
+            while ($actual->siguiente !== $limite) {
+                $comparaciones++;
+                if ($vaDespues($actual->dato, $actual->siguiente->dato)) {
+                    $temporal = $actual->dato;
+                    $actual->dato = $actual->siguiente->dato;
+                    $actual->siguiente->dato = $temporal;
+                    $intercambios++;
+                    $huboIntercambio = true;
+                }
+                $actual = $actual->siguiente;
+            }
+            $limite = $actual;
+        } while ($huboIntercambio);
+
+        return ['pasadas' => $pasadas, 'comparaciones' => $comparaciones, 'intercambios' => $intercambios];
+    }
 }

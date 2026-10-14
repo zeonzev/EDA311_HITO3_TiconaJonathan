@@ -87,6 +87,15 @@ $lista = $repositorio->listar();
 $recorrido = ($_GET['recorrido'] ?? '') === 'atras' ? 'atras' : 'adelante';
 $productos = $recorrido === 'atras' ? $lista->recorrerAtras() : $lista->recorrerAdelante();
 
+$listaOrdenada = $lista->copiar();
+$estadisticas = $listaOrdenada->ordenarBurbuja(function (Producto $a, Producto $b) {
+    if ($a->precio != $b->precio) {
+        return $a->precio > $b->precio;
+    }
+    return strcasecmp($a->nombre, $b->nombre) > 0;
+});
+$productosOrdenados = $listaOrdenada->recorrerAdelante();
+
 $titulo = 'Productos';
 require 'includes/encabezado.php';
 ?>
@@ -143,6 +152,30 @@ require 'includes/encabezado.php';
                         <button type="submit" class="boton rojo">Eliminar</button>
                     </form>
                 </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+</section>
+
+<section class="caja">
+    <h2>Resultado de Bubble Sort</h2>
+    <p class="criterio">Criterio: <b>precio de menor a mayor</b>; si dos productos cuestan lo mismo, se ordenan por nombre. Sirve para comparar precios rápidamente.</p>
+    <p class="estadisticas">
+        Pasadas: <b><?= $estadisticas['pasadas'] ?></b> |
+        Comparaciones: <b><?= $estadisticas['comparaciones'] ?></b> |
+        Intercambios: <b><?= $estadisticas['intercambios'] ?></b>
+    </p>
+    <?= dibujarNodos(array_map(fn($p) => 'Bs ' . number_format($p->precio, 2), $productosOrdenados)) ?>
+    <table>
+        <tr><th>#</th><th>Precio (Bs)</th><th>Nombre</th><th>ID</th><th>Categoría</th><th>Stock</th></tr>
+        <?php foreach ($productosOrdenados as $i => $p): ?>
+            <tr>
+                <td><?= $i + 1 ?></td>
+                <td><b><?= number_format($p->precio, 2) ?></b></td>
+                <td><?= e($p->nombre) ?></td>
+                <td><?= $p->idProducto ?></td>
+                <td><?= e($p->categoria) ?></td>
+                <td><?= $p->stock ?></td>
             </tr>
         <?php endforeach; ?>
     </table>

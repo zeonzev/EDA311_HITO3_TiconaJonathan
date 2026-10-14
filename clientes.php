@@ -80,6 +80,12 @@ $lista = $repositorio->listar();
 $recorrido = ($_GET['recorrido'] ?? '') === 'atras' ? 'atras' : 'adelante';
 $clientes = $recorrido === 'atras' ? $lista->recorrerAtras() : $lista->recorrerAdelante();
 
+$listaOrdenada = $lista->copiar();
+$estadisticas = $listaOrdenada->ordenarBurbuja(
+    fn(Cliente $a, Cliente $b) => strcasecmp($a->nombre, $b->nombre) > 0
+);
+$clientesOrdenados = $listaOrdenada->recorrerAdelante();
+
 $titulo = 'Clientes';
 require 'includes/encabezado.php';
 ?>
@@ -134,6 +140,29 @@ require 'includes/encabezado.php';
                         <button type="submit" class="boton rojo">Eliminar</button>
                     </form>
                 </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+</section>
+
+<section class="caja">
+    <h2>Resultado de Bubble Sort</h2>
+    <p class="criterio">Criterio: <b>nombre del cliente, de la A a la Z</b>. Facilita encontrar a un cliente por su nombre.</p>
+    <p class="estadisticas">
+        Pasadas: <b><?= $estadisticas['pasadas'] ?></b> |
+        Comparaciones: <b><?= $estadisticas['comparaciones'] ?></b> |
+        Intercambios: <b><?= $estadisticas['intercambios'] ?></b>
+    </p>
+    <?= dibujarNodos(array_map(fn($c) => $c->nombre, $clientesOrdenados)) ?>
+    <table>
+        <tr><th>#</th><th>Nombre</th><th>ID</th><th>Email</th><th>Edad</th></tr>
+        <?php foreach ($clientesOrdenados as $i => $c): ?>
+            <tr>
+                <td><?= $i + 1 ?></td>
+                <td><b><?= e($c->nombre) ?></b></td>
+                <td><?= $c->idCliente ?></td>
+                <td><?= e($c->email) ?></td>
+                <td><?= $c->edad ?></td>
             </tr>
         <?php endforeach; ?>
     </table>

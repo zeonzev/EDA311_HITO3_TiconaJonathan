@@ -92,6 +92,15 @@ $lista = $repositorio->listar();
 $recorrido = ($_GET['recorrido'] ?? '') === 'atras' ? 'atras' : 'adelante';
 $pedidos = $recorrido === 'atras' ? $lista->recorrerAtras() : $lista->recorrerAdelante();
 
+$listaOrdenada = $lista->copiar();
+$estadisticas = $listaOrdenada->ordenarBurbuja(function (Pedido $a, Pedido $b) {
+    if ($a->fecha !== $b->fecha) {
+        return $a->fecha > $b->fecha;
+    }
+    return $a->idPedido > $b->idPedido;
+});
+$pedidosOrdenados = $listaOrdenada->recorrerAdelante();
+
 $titulo = 'Pedidos';
 require 'includes/encabezado.php';
 ?>
@@ -158,6 +167,29 @@ require 'includes/encabezado.php';
                         <button type="submit" class="boton rojo">Eliminar</button>
                     </form>
                 </td>
+            </tr>
+        <?php endforeach; ?>
+    </table>
+</section>
+
+<section class="caja">
+    <h2>Resultado de Bubble Sort</h2>
+    <p class="criterio">Criterio: <b>fecha del pedido, de la más antigua a la más reciente</b>; si son del mismo día, por número de pedido. Así se ven los pedidos en el orden en que se hicieron.</p>
+    <p class="estadisticas">
+        Pasadas: <b><?= $estadisticas['pasadas'] ?></b> |
+        Comparaciones: <b><?= $estadisticas['comparaciones'] ?></b> |
+        Intercambios: <b><?= $estadisticas['intercambios'] ?></b>
+    </p>
+    <?= dibujarNodos(array_map(fn($p) => date('d/m/Y', strtotime($p->fecha)), $pedidosOrdenados)) ?>
+    <table>
+        <tr><th>#</th><th>Fecha</th><th>ID</th><th>Cliente</th><th>Total (Bs)</th></tr>
+        <?php foreach ($pedidosOrdenados as $i => $p): ?>
+            <tr>
+                <td><?= $i + 1 ?></td>
+                <td><b><?= date('d/m/Y', strtotime($p->fecha)) ?></b></td>
+                <td><?= $p->idPedido ?></td>
+                <td>#<?= $p->idCliente ?> - <?= e($p->nombreCliente) ?></td>
+                <td><?= number_format($p->total, 2) ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
