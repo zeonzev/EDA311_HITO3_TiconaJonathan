@@ -2,6 +2,7 @@
 require_once 'includes/funciones.php';
 require_once 'config/conexion.php';
 require_once 'repositorios/ClienteRepositorio.php';
+require_once 'repositorios/ProductoRepositorio.php';
 
 try {
     $conexion = conectar();
@@ -12,6 +13,7 @@ try {
 }
 
 $totalClientes = (new ClienteRepositorio($conexion))->listar()->tamanyo();
+$totalProductos = (new ProductoRepositorio($conexion))->listar()->tamanyo();
 
 $titulo = 'Inicio';
 require 'includes/encabezado.php';
@@ -25,6 +27,11 @@ require 'includes/encabezado.php';
         <span class="numero"><?= $totalClientes ?></span>
         <span class="nombre">Clientes</span>
         <span class="detalle">Ordenados por nombre (A-Z)</span>
+    </a>
+    <a class="tarjeta" href="productos.php">
+        <span class="numero"><?= $totalProductos ?></span>
+        <span class="nombre">Productos</span>
+        <span class="detalle">Ordenados por precio (menor a mayor)</span>
     </a>
 </div>
 

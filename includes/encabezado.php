@@ -13,6 +13,7 @@
     <nav>
         <a href="index.php" class="<?= $paginaActual === 'index.php' ? 'activo' : '' ?>">Inicio</a>
         <a href="clientes.php" class="<?= $paginaActual === 'clientes.php' ? 'activo' : '' ?>">Clientes</a>
+        <a href="productos.php" class="<?= $paginaActual === 'productos.php' ? 'activo' : '' ?>">Productos</a>
     </nav>
 </header>
 <main class="contenedor">
